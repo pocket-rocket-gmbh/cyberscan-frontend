@@ -1,28 +1,15 @@
 <template>
-  <main>
-    <h1>Cyberscan</h1>
-    <input
-      ref="inputUrl"
-      type="url"
-      placeholder="https://www.pocket-rocket.io"
-      value="https://www.pocket-rocket.io"
-    />
-    <input type="button" value="Start scanning" @click="startScanner" />
-  </main>
+  <h1>Infos about everything</h1>
 </template>
 
 <script>
-import { useMainStore } from "@/stores/main";
+import Navigation from "../components/navigation.vue"
+import StandardButton from "../components/standard_button.vue"
 
 export default {
-  methods: {
-    startScanner() {
-      const store = useMainStore();
-      let inputUrl = this.$refs.inputUrl.value;
-      let test = store.startScanner(inputUrl);
-      console.log("input", test);
-      this.$router.push("running");
-    },
-  },
-};
+  components: {
+    Navigation,
+    StandardButton,
+  }
+}
 </script>
