@@ -70,6 +70,12 @@
               <p>{{ host.servers.join(", ") }}</p>
               <p>{{ host.networks.join(", ") }}</p>
               <p>{{ host.ips.join(", ") }}</p>
+              <div v-for="sqlmap in host.sqlmap" :key="sqlmap">
+                <p v-for="alert in sqlmap" :key="alert">
+                  * {{ alert["Target URL"] }},
+                  Parameter: {{ alert["Parameter"] }}
+                </p>
+              </div>
             </div>
           </div>
         </li>
