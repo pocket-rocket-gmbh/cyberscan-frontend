@@ -50,6 +50,11 @@
           text="Start Scanning"
           :function="this.startScanner"
         />
+        <StandardButton
+          class="mt-10"
+          text="Show report"
+          :function="this.showReport"
+        />
       </div>
     </header>
   </section>
@@ -82,14 +87,22 @@ export default {
   },
   methods: {
     async startScanner() {
-      let result = await this.store.startScanner(this.inputUrl);
-      this.store.waitForReport(this.inputUrl);
-      localStorage.setItem("domain", this.inputUrl);
+      this.store.resetData()
+      let result = await this.store.startScanner(this.inputUrl)
+      this.store.waitForReport(this.inputUrl)
+      localStorage.setItem("domain", this.inputUrl)
       if (result) {
         this.store.bannerText = ""
-        this.$router.push("report");
+        this.$router.push("report")
       }
     },
+    showReport() {
+      this.store.resetData()
+      this.store.waitForReport(this.inputUrl)
+      localStorage.setItem("domain", this.inputUrl)
+      this.store.bannerText = ""
+      this.$router.push("report")
+    }
   },
 };
 </script>

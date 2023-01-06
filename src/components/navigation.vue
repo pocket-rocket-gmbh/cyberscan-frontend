@@ -146,7 +146,7 @@
     <div class="mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8">
       <div class="pr-16 sm:px-16 sm:text-center">
         <p class="font-medium text-white">
-          <span class="md:hidden">{{ this.store.bannerText }}</span>
+          {{ this.store.bannerText }}
         </p>
       </div>
       <div
@@ -217,21 +217,23 @@ export default {
       return false;
     },
     showStatusBanner() {
-      if (this.store.infos.length > 0) {
+      if (this.store.hosts == 0) {
         this.showBanner = true;
-        this.store.bannerText =
-          "Wir scannen die Dienste nach Sicherheitslücken";
-      } else if (this.store.webservers.length > 0) {
-        this.store.bannerText = "Wir prüfen die Technologie der Websites...";
-      } else if (this.store.hosts.length > 0) {
-        this.store.bannerText = "Wir scannen Ports der erreichbaren Hosts...";
-      } else if (this.store.subdomains.length > 0) {
-        this.store.bannerText = "Wir suchen nach Subdomains...";
+        this.store.bannerText = "Wir untersuchen die Domain...";
+      } else if (this.store.webservers.length == 0) {
+        this.showBanner = true;
+        this.store.bannerText = "Wir suchen nach aktiven Webanwendungen...";
+      } else if (this.store.techs.length == 0) {
+        this.showBanner = true;
+        this.store.bannerText = "Wir untersuchen aktive Webanwendungen...";
+      } else if (this.store.cves.length == 0) {
+        this.showBanner = true;
+        this.store.bannerText = "Wir suchen nach Sicherheitslücken...";
       }
 
       setTimeout(() => {
         this.showStatusBanner();
-      }, 15 * 1000);
+      }, 5 * 1000);
     },
   },
   components: {
