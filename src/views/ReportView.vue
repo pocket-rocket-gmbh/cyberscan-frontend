@@ -2,14 +2,14 @@
   <section>
     <header class="p-5 mx-auto max-w-7xl sm:px-6 lg:px-8">
       Found subdomains:
-      {{ this.store.subdomains.length }}<br />
+      {{ this.store.countSubs }}<br />
       Active Hosts:
-      {{ this.store.hosts.length }}<br />
+      {{ this.store.countHosts }}<br />
       Active Webservers:
-      {{ this.store.webservers.length }}
+      {{ this.store.countWebservers }}
     </header>
     <div
-      v-if="this.store.high.length > 0"
+      v-if="this.store.countHighCVEs > 0"
       class="flex flex-col items-center mx-auto max-w-7xl sm:px-6 lg:px-8 pb-10"
     >
       <h2>High Security Issues:</h2>
@@ -44,7 +44,7 @@
           :key="host"
           :class="[
             'm-1 lg:m-0 col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow',
-            host.cves.length > 0 ? 'ring-2 ring-red-500' : '',
+            host.alerts.length > 0 ? 'ring-2 ring-red-500' : '',
           ]"
         >
           <div class="flex w-full items-center justify-between space-x-6 p-3">
@@ -54,27 +54,29 @@
                   {{ host.host }}
                 </h2>
               </div>
-              <div class="overflow-hidden text-sm" v-if="host.urls.length > 0">
+              <div class="overflow-hidden text-sm" v-if="host.webservers.length > 0">
                 <a
                   target="_blank"
                   class="underline decoration-1"
-                  :href="host.urls[0]"
-                  >{{ host.urls[0].substring(0, 100) }}</a
+                  :href="host.webservers[0].url"
+                  >{{ host.webservers[0].url }}</a
                 >
               </div>
-              <p class="text-rose-600">{{ host.high.join(", ") }}</p>
-              <p class="text-rose-600">{{ host.cves.join(", ") }}</p>
-              <div v-for="tech in host.techs" :key="tech">
-                * {{ tech.key }} = {{ tech.value }}<br/>
+              <div v-for="alert in host.alerts" :key="alert">
+                  Title: {{ alert.title }}<br/>
+                  URL: {{ alert.url }}<br/>
+                  Rish: {{ alert.severity}}<br/>
+                  Description: {{ alert.description }}<br/>
+                  CVE: {{ alert.cve }}
               </div>
-              <p>{{ host.servers.join(", ") }}</p>
-              <p>{{ host.networks.join(", ") }}</p>
-              <p>{{ host.ips.join(", ") }}</p>
-              <div v-for="sqlmap in host.sqlmap" :key="sqlmap">
-                <p v-for="alert in sqlmap" :key="alert">
-                  * {{ alert["Target URL"] }},
-                  Parameter: {{ alert["Parameter"] }}
-                </p>
+              <div v-for="panel in host.panels" :key="panel">
+                {{ panel.name }}<br/>
+                {{ panel.url }}
+              </div>
+               <div v-for="tech in host.techs" :key="tech">
+                {{ tech.name }}<span v-if="tech.value">
+                  = {{ tech.value }}
+                </span>
               </div>
             </div>
           </div>

@@ -20,14 +20,13 @@ export const useMainStore = defineStore(
     requestTimer: null,
     domain: null,
     bannerText: "",
-    subdomains: [],
-    hosts: [],
-    webservers: [],
-    panels: [],
-    techs: [],
-    high: [],
-    cves: [],
-    structured: []
+    countSubs: 0,
+    countHosts: 0,
+    countWebservers: 0,
+    countCVEs: 0,
+    countHighCVEs: 0,
+    structured: [],
+    status: null
   }),
   actions: {
     setInputUrl(inputUrl) {
@@ -35,14 +34,13 @@ export const useMainStore = defineStore(
       this.domain = getDomainFromUrl(inputUrl)
     },
     resetData() {
-      this.subdomains = []
-      this.webservers = []
-      this.panels = []
-      this.techs = []
-      this.infos = []
-      this.high = []
-      this.cves = []
+      this.countSubs = 0
+      this.countHosts = 0
+      this.countWebservers = 0
+      this.countCVEs = 0
+      this.countHighCVEs = 0
       this.structured = []
+      this.status = null
     },
     waitForReport(inputUrl) {
       if (this.requestTimer) {
@@ -62,18 +60,10 @@ export const useMainStore = defineStore(
     async getReport(inputUrl) {
       function sortResultBasedOnIssues(structured) {
         return structured.sort((a, b) => {
-          if (a.cves.length > 0 || b.cves.length > 0) {
-            if (a.cves.length > b.cves.length) {
+          if (a.alerts.length > 0 || b.alerts.length > 0) {
+            if (a.alerts.length > b.alerts.length) {
               return -1;
-            } else if (a.cves.length < b.cves.length) {
-              return 1;
-            } else {
-              return 0;
-            }
-          } else {
-            if (a.urls.length > b.urls.length) {
-              return -1;
-            } else if (a.urls.length < b.urls.length) {
+            } else if (a.alerts.length < b.alerts.length) {
               return 1;
             } else {
               return 0;
@@ -83,14 +73,14 @@ export const useMainStore = defineStore(
       }
       let result = await this.getReportFromApi(inputUrl)
       if (result.data) {
-        this.subdomains = result.data.subdomains || []
-        this.hosts = result.data.hosts || []
-        this.webservers = result.data.webservers || []
-        this.panels = result.data.panels || []
-        this.techs = result.data.techs || []
-        this.high = result.data.high || []
-        this.cves = result.data.cves || []
-        this.structured = sortResultBasedOnIssues(result.data.structured || [])
+        this.countSubs = result.data.subdomains
+        this.countSubs = result.data.countSubs
+        this.countHosts = result.data.countHosts
+        this.countWebservers = result.data.countWebservers
+        this.countCVEs = result.data.countCVEs
+        this.countHighCVEs = result.data.countHighCVEs
+        this.status = result.data.status
+        this.structured = sortResultBasedOnIssues(result.data.structured)
         return true;
       } else {
         return false;
@@ -107,5 +97,4 @@ export const useMainStore = defineStore(
       return result;
     }
   }
-}
-)
+})
