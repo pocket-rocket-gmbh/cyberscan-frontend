@@ -1,7 +1,7 @@
 <template>
-  <Disclosure as="nav" class="bg-gray-800">
+  <Disclosure as="nav" class="bg-theme-background">
     <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-      <div class="relative flex h-16 items-center justify-between">
+      <div class="relative flex h-12 px-24 py-12 items-center justify-between">
         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
           <!-- Mobile menu button-->
           <DisclosureButton
@@ -12,7 +12,7 @@
               rounded-md
               p-2
               text-gray-400
-              hover:bg-gray-700 hover:text-white
+              hover:bg-gray-700
               focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white
             "
           >
@@ -35,71 +35,46 @@
               src="/img/rocket.svg"
               alt="Company Logo"
             />
+            Hacker Report
           </div>
+          <div class="flex-1"></div>
           <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
               <router-link
                 :class="[
-                  this.isActiveRoute('info')
-                    ? 'bg-gray-900 text-white'
-                    : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                  'px-3 py-2 rounded-md text-sm font-medium',
+                  this.isActiveRoute('main')
+                    ? 'text-white'
+                    : 'hover:text-white',
+                  'px-3 py-2 font-medium',
                 ]"
                 to="/"
-                >Info</router-link
               >
+                Info
+              </router-link>
               <router-link
                 :class="[
                   this.isActiveRoute('scanner')
-                    ? 'bg-gray-900 text-white'
-                    : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                  'px-3 py-2 rounded-md text-sm font-medium',
+                    ? 'text-white'
+                    : 'hover:text-white',
+                  'px-3 py-2 font-medium',
                 ]"
                 to="/scanner"
-                >Scanner</router-link
               >
+                Scanner
+              </router-link>
               <router-link
                 :class="[
                   this.isActiveRoute('report')
-                    ? 'bg-gray-900 text-white'
-                    : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                  'px-3 py-2 rounded-md text-sm font-medium',
+                    ? 'text-white'
+                    : 'hover:text-white',
+                  'px-3 py-2 font-medium',
                 ]"
                 to="/report"
-                >Report</router-link
               >
+                Report
+              </router-link>
             </div>
           </div>
-        </div>
-        <div
-          class="
-            absolute
-            inset-y-0
-            right-0
-            flex
-            items-center
-            pr-2
-            sm:static sm:inset-auto sm:ml-6 sm:pr-0
-          "
-        >
-          <button
-            type="button"
-            class="
-              rounded-full
-              bg-gray-800
-              p-1
-              text-gray-400
-              hover:text-white
-              focus:outline-none
-              focus:ring-2
-              focus:ring-white
-              focus:ring-offset-2
-              focus:ring-offset-gray-800
-            "
-          >
-            <span class="sr-only">View notifications</span>
-            <BellIcon class="h-6 w-6" aria-hidden="true" />
-          </button>
         </div>
       </div>
     </div>
@@ -108,34 +83,31 @@
       <div class="space-y-1 px-2 pt-2 pb-3">
         <router-link
           :class="[
-            this.isActiveRoute('info')
-              ? 'bg-gray-900 text-white'
-              : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+            this.isActiveRoute('main') ? 'text-white' : 'hover:text-white',
             'block px-3 py-2 rounded-md text-base font-medium',
           ]"
           to="/"
-          >Info</router-link
         >
+          Info
+        </router-link>
         <router-link
           :class="[
-            this.isActiveRoute('scanner')
-              ? 'bg-gray-900 text-white'
-              : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+            this.isActiveRoute('scanner') ? 'text-white' : 'hover:text-white',
             'block px-3 py-2 rounded-md text-base font-medium',
           ]"
           to="/scanner"
-          >Scanner</router-link
         >
+          Scanner
+        </router-link>
         <router-link
           :class="[
-            this.isActiveRoute('report')
-              ? 'bg-gray-900 text-white'
-              : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+            this.isActiveRoute('report') ? 'text-white' : 'hover:text-white',
             'block px-3 py-2 rounded-md text-base font-medium',
           ]"
           to="/report"
-          >Report</router-link
         >
+          Report
+        </router-link>
       </div>
     </DisclosurePanel>
   </Disclosure>
@@ -211,22 +183,19 @@ export default {
   },
   methods: {
     isActiveRoute(name) {
-      if (name == this.$route.name) {
+      if (name == this.$route.name || !this.$route.name) {
         return true;
       }
       return false;
     },
     showStatusBanner() {
-      if (this.store.hosts == 0) {
+      if (this.store.countHosts == 0) {
         this.showBanner = true;
         this.store.bannerText = "Wir untersuchen die Domain...";
-      } else if (this.store.webservers.length == 0) {
+      } else if (this.store.countWebservers == 0) {
         this.showBanner = true;
         this.store.bannerText = "Wir suchen nach aktiven Webanwendungen...";
-      } else if (this.store.techs.length == 0) {
-        this.showBanner = true;
-        this.store.bannerText = "Wir untersuchen aktive Webanwendungen...";
-      } else if (this.store.cves.length == 0) {
+      } else if (this.store.countCVEs == 0) {
         this.showBanner = true;
         this.store.bannerText = "Wir suchen nach Sicherheitslücken...";
       }

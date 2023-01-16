@@ -54,29 +54,37 @@
                   {{ host.host }}
                 </h2>
               </div>
-              <div class="overflow-hidden text-sm" v-if="host.webservers.length > 0">
+              <div
+                class="overflow-hidden text-sm"
+                v-for="webserver in host.webservers"
+                :key="webserver"
+              >
                 <a
                   target="_blank"
                   class="underline decoration-1"
-                  :href="host.webservers[0].url"
-                  >{{ host.webservers[0].url }}</a
+                  :href="webserver.url"
                 >
+                  {{ webserver.url }}
+                </a>
+                {{ webserver.title }}<br />
+                {{ webserver.server }}<br />
+                {{ webserver.statusCodes }}<br />
+                {{ webserver.network }}
               </div>
               <div v-for="alert in host.alerts" :key="alert">
-                  Title: {{ alert.title }}<br/>
-                  URL: {{ alert.url }}<br/>
-                  Rish: {{ alert.severity}}<br/>
-                  Description: {{ alert.description }}<br/>
-                  CVE: {{ alert.cve }}
+                Title: {{ alert.title }}<br />
+                URL: {{ alert.url }}<br />
+                Rish: {{ alert.severity }}<br />
+                Description: {{ alert.description }}<br />
+                CVE: {{ alert.cve }}
               </div>
               <div v-for="panel in host.panels" :key="panel">
-                {{ panel.name }}<br/>
+                {{ panel.name }}<br />
                 {{ panel.url }}
               </div>
-               <div v-for="tech in host.techs" :key="tech">
-                {{ tech.name }}<span v-if="tech.value">
-                  = {{ tech.value }}
-                </span>
+              <div v-for="tech in host.techs" :key="tech">
+                {{ tech.name
+                }}<span v-if="tech.value"> = {{ tech.value }} </span>
               </div>
             </div>
           </div>
@@ -89,21 +97,46 @@
 <script>
 import { EllipsisVerticalIcon } from "@heroicons/vue/20/solid";
 import { useMainStore } from "@/stores/main";
+import StandardButton from "../components/standard_button.vue";
 
 export default {
   setup() {
     const store = useMainStore();
     return { store };
   },
-  created() {
-    let inputUrl = localStorage.getItem("domain");
-    if (inputUrl) {
-      this.store.setInputUrl(inputUrl);
-      this.store.waitForReport(inputUrl);
+  data() {
+    return {
+      inputUrl: "http://www.bundeswehr.de"
     }
   },
   components: {
-    EllipsisVerticalIcon,
+    Navigation,
+    StandardButton,
+  },
+  created() {
+    let inputUrl = localStorage.getItem("domain")
+    if (inputUrl) {
+      this.inputUrl = inputUrl
+    }
+  },
+  methods: {
+    async startScanner() {
+      this.store.resetData()
+      let result = await this.store.startScanner(this.inputUrl)
+      this.store.waitForReport(this.inputUrl)
+      localStorage.setItem("domain", this.inputUrl)
+      if (result) {
+        this.store.bannerText = ""
+        this.$router.push("report")
+      }
+    },
+    showReport() {
+      this.store.resetData()
+      this.store.waitForReport(this.inputUrl)
+      localStorage.setItem("domain", this.inputUrl)
+      this.store.bannerText = ""
+      this.$router.push("report")
+    }
   },
 };
 </script>

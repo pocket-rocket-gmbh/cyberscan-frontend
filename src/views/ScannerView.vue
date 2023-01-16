@@ -11,7 +11,6 @@
               absolute
               left-3
               top-1/2
-              -mt-2.5
               text-slate-400
               pointer-events-none
               group-focus-within:text-blue-500
