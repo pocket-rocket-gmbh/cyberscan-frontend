@@ -1,59 +1,51 @@
 <template>
   <section>
-    <header class="space-y-4 p-4 sm:px-8 sm:py-6 lg:p-4 xl:px-8 xl:py-6">
-      <div class="flex flex-col items-center">
-        <form class="group relative md:w-1/2 w-full">
-          <svg
-            width="20"
-            height="20"
-            fill="currentColor"
-            class="
-              absolute
-              left-3
-              top-1/2
-              text-slate-400
-              pointer-events-none
-              group-focus-within:text-blue-500
-            "
-            aria-hidden="true"
-          >
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-            />
-          </svg>
+    <header class="row">
+      <div class="col">
+        <div class="headline">
+          <span class="font-white"> Sicherheit für deine Systeme. </span><br />
+          Jetzt scannen!
+        </div>
+        <form class="flex input-form">
+          <div class="input-http">https</div>
           <input
-            class="
-              focus:ring-2 focus:ring-blue-500 focus:outline-none
-              appearance-none
-              w-full
-              text-sm
-              leading-6
-              text-slate-900
-              placeholder-slate-400
-              rounded-md
-              py-2
-              pl-10
-              ring-1 ring-slate-200
-              shadow-sm
-            "
+            class="input-domain"
             v-model="inputUrl"
             type="url"
-            placeholder="https://www.pocket-rocket.io"
-            aria-label="Filter projects"
+            placeholder="www.pocket-rocket.io"
+          />
+          <StandardButton
+            text="Scan"
+            :function="this.checkScanner"
+            addCSS="icon-search button-bigger"
           />
         </form>
-        <StandardButton
-          class="mt-10"
-          text="Start Scanning"
-          :function="this.startScanner"
-        />
-        <StandardButton
-          class="mt-10"
-          text="Show report"
-          :function="this.showReport"
-        />
+      </div>
+      <div class="col hidden-mobile">
+        <div class="star">
+          <img src="/img/star.svg" />
+        </div>
+        <div class="eye-container">
+          <div class="eye">
+            <svg
+              width="368"
+              height="202"
+              viewBox="0 0 368 202"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 100.98C101.514 -33.6156 265.99 -33.6156 367.37 100.98C265.99 235.442 101.514 235.442 0 100.98Z"
+                fill="white"
+              />
+              <path
+                class="eye-svg"
+                d="M183.685 149.402C224.941 149.402 258.386 115.958 258.386 74.7012C258.386 33.4449 224.941 0 183.685 0C142.429 0 108.984 33.4449 108.984 74.7012C108.984 115.958 142.429 149.402 183.685 149.402Z"
+                fill="#1E1F1C"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
     </header>
   </section>
@@ -71,37 +63,114 @@ export default {
   },
   data() {
     return {
-      inputUrl: "http://www.bundeswehr.de"
-    }
+      inputUrl: "http://www.bundeswehr.de",
+    };
   },
   components: {
     Navigation,
     StandardButton,
   },
   created() {
-    let inputUrl = localStorage.getItem("domain")
+    let inputUrl = localStorage.getItem("domain");
     if (inputUrl) {
-      this.inputUrl = inputUrl
+      this.inputUrl = inputUrl;
     }
   },
   methods: {
-    async startScanner() {
-      this.store.resetData()
-      let result = await this.store.startScanner(this.inputUrl)
-      this.store.waitForReport(this.inputUrl)
-      localStorage.setItem("domain", this.inputUrl)
+    async checkScanner() {
+      this.store.resetData();
+      let result = await this.store.checkScanner(this.inputUrl);
+      this.store.waitForReport(this.inputUrl);
+      localStorage.setItem("domain", this.inputUrl);
       if (result) {
-        this.store.bannerText = ""
-        this.$router.push("report")
+        this.store.bannerText = "";
+        this.$router.push("report");
       }
     },
-    showReport() {
-      this.store.resetData()
-      this.store.waitForReport(this.inputUrl)
-      localStorage.setItem("domain", this.inputUrl)
-      this.store.bannerText = ""
-      this.$router.push("report")
-    }
   },
 };
 </script>
+
+<style scoped>
+.icon-search::before {
+  content: "";
+  background-image: url("/img/search.svg");
+  background-size: 20px 20px;
+  height: 20px;
+  width: 20px;
+  margin: 5px;
+}
+
+.button-bigger {
+  min-width: 100px;
+}
+
+.headline {
+  max-width: 500px;
+  font-size: 350%;
+}
+
+.star {
+  position: absolute;
+  right: 50px;
+}
+
+.star img {
+  height: 70px;
+}
+
+.input-form {
+  height: 50px;
+  margin-top: 50px;
+}
+
+.input-http {
+  background-color: #ddd;
+  color: #999;
+  padding: 15px;
+  font-size: 105%;
+}
+
+.input-domain {
+  flex: 1;
+  font-size: 105%;
+  border: none;
+  padding: 10px;
+}
+
+.eye-container {
+  margin: 0 auto;
+  display: flex;
+  max-width: 400px;
+  height: 600px;
+  background: #1d1d1b;
+  border-radius: 400px;
+}
+
+.eye {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye svg {
+  max-width: 300px;
+}
+
+.eye-svg {
+  animation: eye 90s ease infinite;
+}
+
+@keyframes eye {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  25% {
+    transform: translate(-20px, 40px);
+  }
+  50% {
+    transform: translate(30px, 20px);
+  }
+}
+</style>

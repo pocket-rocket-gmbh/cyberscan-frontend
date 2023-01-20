@@ -1,51 +1,22 @@
 <template>
-  <section>
-    <header class="p-5 mx-auto max-w-7xl sm:px-6 lg:px-8">
-      Found subdomains:
-      {{ this.store.countSubs }}<br />
-      Active Hosts:
-      {{ this.store.countHosts }}<br />
-      Active Webservers:
-      {{ this.store.countWebservers }}
-    </header>
-    <div
-      v-if="this.store.countHighCVEs > 0"
-      class="flex flex-col items-center mx-auto max-w-7xl sm:px-6 lg:px-8 pb-10"
-    >
-      <h2>High Security Issues:</h2>
-      <ul
-        role="list"
-        class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
-      >
-        <li
-          v-for="cve in ['test']"
-          :key="cve"
-          class="col-span-2 divide-y divide-gray-200 rounded-lg bg-white shadow"
-        >
-          <div class="flex w-full items-center justify-between space-x-6 p-6">
-            <div class="flex-2 truncate">
-              <div class="flex items-center space-x-4">
-                <h3 class="truncate text-sm font-medium text-gray-900">
-                  {{ cve }}
-                </h3>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
+  <section class="relative">
+    <router-link class="backlink" to="/">Zurück zum Scanner</router-link>
+    <StandardButton
+      text="Re-Scan"
+      :function="this.startScanner"
+      addCSS="button-rescan"
+    />
+    <ReportOverview></ReportOverview>
+    <ReportHighCVEs></ReportHighCVEs>
     <div class="flex flex-col items-center mx-auto max-w-7xl sm:px-6 lg:px-8">
       <ul
         role="list"
-        class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+        class="cards"
       >
         <li
           v-for="host in this.store.structured"
           :key="host"
-          :class="[
-            'm-1 lg:m-0 col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow',
-            host.alerts.length > 0 ? 'ring-2 ring-red-500' : '',
-          ]"
+          class="card"
         >
           <div class="flex w-full items-center justify-between space-x-6 p-3">
             <div class="flex-1 break-all">
@@ -95,9 +66,11 @@
 </template>
 
 <script>
-import { EllipsisVerticalIcon } from "@heroicons/vue/20/solid";
 import { useMainStore } from "@/stores/main";
-import StandardButton from "../components/standard_button.vue";
+import Navigation from "@/components/navigation.vue";
+import ReportOverview from "@/components/report_overview.vue";
+import ReportHighCVEs from "@/components/report_high_cves.vue";
+import StandardButton from "@/components/standard_button.vue";
 
 export default {
   setup() {
@@ -106,37 +79,64 @@ export default {
   },
   data() {
     return {
-      inputUrl: "http://www.bundeswehr.de"
-    }
+      inputUrl: "http://www.bundeswehr.de",
+    };
   },
   components: {
     Navigation,
+    ReportOverview,
+    ReportHighCVEs,
     StandardButton,
   },
   created() {
-    let inputUrl = localStorage.getItem("domain")
+    let inputUrl = localStorage.getItem("domain");
     if (inputUrl) {
-      this.inputUrl = inputUrl
+      this.inputUrl = inputUrl;
+      this.store.waitForReport(this.inputUrl);
     }
   },
   methods: {
     async startScanner() {
-      this.store.resetData()
-      let result = await this.store.startScanner(this.inputUrl)
-      this.store.waitForReport(this.inputUrl)
-      localStorage.setItem("domain", this.inputUrl)
-      if (result) {
-        this.store.bannerText = ""
-        this.$router.push("report")
-      }
+      this.store.resetData();
+      this.store.startScanner(this.inputUrl);
+      this.store.waitForReport(this.inputUrl);
+      localStorage.setItem("domain", this.inputUrl);
     },
-    showReport() {
-      this.store.resetData()
-      this.store.waitForReport(this.inputUrl)
-      localStorage.setItem("domain", this.inputUrl)
-      this.store.bannerText = ""
-      this.$router.push("report")
-    }
   },
 };
 </script>
+
+<style scoped>
+.button-rescan {
+  background-color: #CCC;
+  padding: 10px;
+  margin: 0 auto;
+}
+
+.cards {
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+  list-style: none;
+  padding-left: 0px; 
+}
+
+.card {
+  background-color: red;
+  padding: 20px;
+}
+
+.backlink {
+  position: absolute;
+  left: 0;
+  top: 10px;
+}
+
+@media (min-width: 600px) {
+  .cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 900px) {
+  .cards { grid-template-columns: repeat(3, 1fr); }
+}
+</style>

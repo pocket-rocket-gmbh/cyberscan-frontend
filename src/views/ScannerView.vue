@@ -71,7 +71,7 @@ export default {
   },
   data() {
     return {
-      inputUrl: "http://www.bundeswehr.de"
+      inputUrl: "www.pocket-rocket.io"
     }
   },
   components: {

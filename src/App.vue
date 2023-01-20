@@ -1,18 +1,20 @@
 <script setup>
-import Navigation from './components/navigation.vue'
+import Navigation from "./components/navigation.vue";
 </script>
 
 <template>
-  <Navigation />
-  <RouterView />
+  <div class="main">
+    <Navigation />
+    <RouterView />
+  </div>
 </template>
 
 <script>
 export default {
   components: {
-    Navigation
-  }
-}
+    Navigation,
+  },
+};
 </script>
 
 <style scoped>

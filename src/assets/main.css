@@ -1,7 +1,71 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@font-face {
+    font-family: 'Inter';
+    src: url(./fonts/Inter-Medium.ttf);
+}
 
-html, body {
-    background-color: #D4D4CD;
+:root {
+    --theme-background: #D4D4CD;
+    --theme-black: #1D1D1B;
+    --theme-green: #1FD996;
+}
+
+html,
+body {
+    background-color: var(--theme-background);
+    color: var(--theme-black);
+    font-family: 'Inter', sans-serif;
+}
+
+.main {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.relative {
+    position: relative;
+}
+
+.center {
+    display: block;;
+    margin: 0 auto;
+}
+
+.flex {
+    display: flex;
+}
+
+/* FONT */
+a,
+a:visited {
+    text-decoration: none;
+}
+
+.default-font {
+    font-family: 'Inter', sans-serif;
+}
+
+.font-white {
+    color: #FFF;
+}
+
+/* GRID */
+.row {
+    display: grid;
+    gap: 1rem;
+}
+
+@media (min-width: 600px) {
+    .row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .hidden-mobile {
+        display: none;
+    }
+}
+
+.col {
+    position: relative;
 }

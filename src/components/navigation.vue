@@ -1,168 +1,37 @@
 <template>
-  <Disclosure as="nav" class="bg-theme-background">
-    <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-      <div class="relative flex h-12 px-24 py-12 items-center justify-between">
-        <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
-          <!-- Mobile menu button-->
-          <DisclosureButton
-            class="
-              inline-flex
-              items-center
-              justify-center
-              rounded-md
-              p-2
-              text-gray-400
-              hover:bg-gray-700
-              focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white
-            "
-          >
-            <span class="sr-only">Open main menu</span>
-            <Bars3Icon v-if="!open" class="block h-6 w-6" aria-hidden="true" />
-            <XMarkIcon v-else class="block h-6 w-6" aria-hidden="true" />
-          </DisclosureButton>
-        </div>
-        <div
-          class="
-            flex flex-1
-            items-center
-            justify-center
-            sm:items-stretch sm:justify-start
-          "
-        >
-          <div class="flex flex-shrink-0 items-center">
-            <img
-              class="block h-8 w-auto"
-              src="/img/rocket.svg"
-              alt="Company Logo"
-            />
-            Hacker Report
-          </div>
-          <div class="flex-1"></div>
-          <div class="hidden sm:ml-6 sm:block">
-            <div class="flex space-x-4">
-              <router-link
-                :class="[
-                  this.isActiveRoute('main')
-                    ? 'text-white'
-                    : 'hover:text-white',
-                  'px-3 py-2 font-medium',
-                ]"
-                to="/"
-              >
-                Info
-              </router-link>
-              <router-link
-                :class="[
-                  this.isActiveRoute('scanner')
-                    ? 'text-white'
-                    : 'hover:text-white',
-                  'px-3 py-2 font-medium',
-                ]"
-                to="/scanner"
-              >
-                Scanner
-              </router-link>
-              <router-link
-                :class="[
-                  this.isActiveRoute('report')
-                    ? 'text-white'
-                    : 'hover:text-white',
-                  'px-3 py-2 font-medium',
-                ]"
-                to="/report"
-              >
-                Report
-              </router-link>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div class="navigation">
+    <div class="logo">
+      <img src="/img/logo.svg" alt="Company Logo" />
     </div>
-
-    <DisclosurePanel class="sm:hidden">
-      <div class="space-y-1 px-2 pt-2 pb-3">
-        <router-link
-          :class="[
-            this.isActiveRoute('main') ? 'text-white' : 'hover:text-white',
-            'block px-3 py-2 rounded-md text-base font-medium',
-          ]"
-          to="/"
-        >
-          Info
-        </router-link>
-        <router-link
-          :class="[
-            this.isActiveRoute('scanner') ? 'text-white' : 'hover:text-white',
-            'block px-3 py-2 rounded-md text-base font-medium',
-          ]"
-          to="/scanner"
-        >
-          Scanner
-        </router-link>
-        <router-link
-          :class="[
-            this.isActiveRoute('report') ? 'text-white' : 'hover:text-white',
-            'block px-3 py-2 rounded-md text-base font-medium',
-          ]"
-          to="/report"
-        >
-          Report
-        </router-link>
-      </div>
-    </DisclosurePanel>
-  </Disclosure>
-  <div
-    v-if="this.store.bannerText.length > 0 && this.showBanner"
-    class="relative bg-indigo-600"
-  >
-    <div class="mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8">
-      <div class="pr-16 sm:px-16 sm:text-center">
-        <p class="font-medium text-white">
-          {{ this.store.bannerText }}
-        </p>
-      </div>
-      <div
-        class="
-          absolute
-          inset-y-0
-          right-0
-          flex
-          items-start
-          pt-1
-          pr-1
-          sm:items-start sm:pt-1 sm:pr-2
-        "
+    <div class="software-name">
+      CYBER<br />
+      SECURITY<br />
+      SCANNER
+    </div>
+    <div class="linklist">
+      <router-link
+        :class="[
+          this.isActiveRoute('main') ? 'navlink-active' : '',
+          'uppercase',
+        ]"
+        to="/"
       >
-        <button
-          type="button"
-          class="
-            flex
-            rounded-md
-            p-2
-            hover:bg-indigo-500
-            focus:outline-none focus:ring-2 focus:ring-white
-          "
-          @click="this.showBanner = false"
-        >
-          <span class="sr-only">Dismiss</span>
-          <XMarkIcon class="h-6 w-6 text-white" aria-hidden="true" />
-        </button>
-      </div>
+        Über Knox
+      </router-link>
+      <router-link
+        :class="[
+          this.isActiveRoute('scanner') ? 'navlink-active' : '',
+          'uppercase',
+        ]"
+        to="/report"
+      >
+        Scan
+      </router-link>
     </div>
   </div>
 </template>
 
 <script>
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-} from "@headlessui/vue";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 import { useMainStore } from "@/stores/main";
 
 export default {
@@ -205,17 +74,49 @@ export default {
       }, 5 * 1000);
     },
   },
-  components: {
-    Disclosure,
-    DisclosureButton,
-    DisclosurePanel,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems,
-    Bars3Icon,
-    BellIcon,
-    XMarkIcon,
-  },
 };
 </script>
+
+<style scoped>
+.navigation {
+  margin: 50px 0px;
+  height: 50px;
+  display: flex;
+}
+
+.logo img {
+  height: 50px;
+}
+
+.software-name {
+  font-size: 90%;
+  margin-left: 10px;
+  align-items: center;
+  display: flex;
+}
+
+.linklist {
+  text-transform: uppercase;
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.linklist > * + * {
+  margin-left: 10px;
+}
+
+.navlink-active {
+  color: #fff;
+}
+
+.info-banner {
+  position: relative;
+  width: 100%;
+}
+</style>

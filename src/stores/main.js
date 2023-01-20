@@ -83,16 +83,21 @@ export const useMainStore = defineStore(
         this.status = result.data.status
         this.structured = sortResultBasedOnIssues(result.data.structured)
 
-        // filter webservers if they only redirect
-        // for (let index = 0; index < this.structured.length; index++) {
-        //   this.structured[index].webservers = this.structured[index].webservers.filter(webserver => webserver.statusCodes.indexOf("200") >= 0)
-        // }
         return true;
       } else {
         return false;
       }
     },
     async startScanner(inputUrl) {
+      let domain = getDomainFromUrl(inputUrl)
+      let result = await axios.get(config.rootPath() + "actions/" + domain + '/start')
+      return result;
+    },
+    async checkScanner(inputUrl) {
+      let report = await this.getReportFromApi(inputUrl)
+      if (report.data.structured.length > 0) {
+        return {status: "Running"};
+      }
       let domain = getDomainFromUrl(inputUrl)
       let result = await axios.get(config.rootPath() + "actions/" + domain + '/start')
       return result;
