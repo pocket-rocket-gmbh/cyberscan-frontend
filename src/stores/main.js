@@ -34,7 +34,8 @@ export const useMainStore = defineStore(
       this.domain = getDomainFromUrl(inputUrl)
     },
     resetData() {
-      clearTimeout(this.requestTimer)  
+      clearTimeout(this.requestTimer)
+      this.requestTimer = null
       this.countSubs = 0
       this.countHosts = 0
       this.countWebservers = 0

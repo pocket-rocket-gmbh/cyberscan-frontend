@@ -6,57 +6,71 @@
       :function="this.startScanner"
       addCSS="button-rescan"
     />
+    <img class="eye-small" src="/img/eye-small.svg" />
     <ReportOverview></ReportOverview>
-    <ReportHighCVEs></ReportHighCVEs>
-    <div class="flex flex-col items-center mx-auto max-w-7xl sm:px-6 lg:px-8">
-      <ul
-        role="list"
-        class="cards"
-      >
+    <div>
+      <ul class="cards">
         <li
+          :class="['card', this.returnCSSByAlertSeverity(host.alerts)]"
           v-for="host in this.store.structured"
           :key="host"
-          class="card"
         >
-          <div class="flex w-full items-center justify-between space-x-6 p-3">
-            <div class="flex-1 break-all">
-              <div class="flex items-center space-x-4">
-                <h2 class="font-medium text-gray-900">
-                  {{ host.host }}
-                </h2>
-              </div>
-              <div
-                class="overflow-hidden text-sm"
-                v-for="webserver in host.webservers"
-                :key="webserver"
-              >
-                <a
-                  target="_blank"
-                  class="underline decoration-1"
-                  :href="webserver.url"
-                >
-                  {{ webserver.url }}
-                </a>
-                {{ webserver.title }}<br />
-                {{ webserver.server }}<br />
-                {{ webserver.statusCodes }}<br />
+          <div>
+            <h2 class="card-title">
+              {{ host.host }}
+            </h2>
+            <div
+              class="card-webserver"
+              v-for="webserver in host.webservers"
+              :key="webserver"
+            >
+              {{ webserver.title }} <br />
+              <a class="card-link" target="_blank" :href="webserver.url">
+                {{ webserver.url }}
+              </a>
+              ({{ webserver.statusCodes }})
+              <br />
+              <span v-if="webserver.server">
+                Server: {{ webserver.server }}
+              </span>
+              <span v-if="webserver.network">
+                <br />
+                Netzwerk: <br />
                 {{ webserver.network }}
-              </div>
-              <div v-for="alert in host.alerts" :key="alert">
-                Title: {{ alert.title }}<br />
-                URL: {{ alert.url }}<br />
-                Rish: {{ alert.severity }}<br />
-                Description: {{ alert.description }}<br />
-                CVE: {{ alert.cve }}
-              </div>
-              <div v-for="panel in host.panels" :key="panel">
-                {{ panel.name }}<br />
-                {{ panel.url }}
-              </div>
-              <div v-for="tech in host.techs" :key="tech">
-                {{ tech.name
-                }}<span v-if="tech.value"> = {{ tech.value }} </span>
-              </div>
+              </span>
+            </div>
+
+            <div
+              class="card-headline card-headline-security"
+              v-if="host.alerts.length > 0"
+            >
+              Sicherheit:
+            </div>
+            <div class="card-alert" v-for="alert in host.alerts" :key="alert">
+              {{ alert.title }}<br />
+              {{ alert.url }}<br />
+              Risiko:<br />
+              {{ alert.severity }}
+              <span v-if="alert.description">
+                <br />
+                Beschreibung:<br />
+                {{ alert.description }}
+              </span>
+              <span v-if="alert.cve">
+                <br />
+                CVE:<br />
+                {{ alert.cve }}
+              </span>
+            </div>
+            <div class="card-panel" v-for="panel in host.panels" :key="panel">
+              {{ panel.name }}<br />
+              {{ panel.url }}
+            </div>
+            <div class="card-headline" v-if="host.techs.length > 0">
+              Technologie:
+            </div>
+            <div class="card-tech" v-for="tech in host.techs" :key="tech">
+              {{ tech.name }}<span v-if="tech.value"> = {{ tech.value }} </span>
             </div>
           </div>
         </li>
@@ -79,7 +93,7 @@ export default {
   },
   data() {
     return {
-      inputUrl: "http://www.bundeswehr.de",
+      inputUrl: "",
     };
   },
   components: {
@@ -102,15 +116,29 @@ export default {
       this.store.waitForReport(this.inputUrl);
       localStorage.setItem("domain", this.inputUrl);
     },
+    returnCSSByAlertSeverity(alerts) {
+      for (let alert of alerts) {
+        if (alert.severity) {
+          return alert.severity;
+        }
+      }
+      return "";
+    },
   },
 };
 </script>
 
 <style scoped>
 .button-rescan {
-  background-color: #CCC;
+  background-color: #ccc;
   padding: 10px;
-  margin: 0 auto;
+  position: absolute;
+  right: 0px;
+}
+
+.eye-small {
+  margin: 5px auto;
+  display: block;
 }
 
 .cards {
@@ -118,12 +146,52 @@ export default {
   display: grid;
   gap: 1rem;
   list-style: none;
-  padding-left: 0px; 
+  padding-left: 0px;
 }
 
 .card {
-  background-color: red;
+  background-color: #fff;
   padding: 20px;
+  word-break: break-word;
+}
+
+.card-webserver {
+  background-color: #eee;
+  padding: 3px 10px;
+}
+
+.card-webserver,
+.card-panel {
+  margin-top: 10px;
+}
+
+.card-headline {
+  font-size: 120%;
+  margin-top: 10px;
+  margin-bottom: 1px;
+}
+
+.high {
+  border-bottom: 5px solid var(--theme-red);
+}
+.critical {
+  border-bottom: 5px solid var(--theme-red);
+}
+
+.card-headline-security {
+  color: var(--theme-red);
+}
+
+.medium {
+  border-bottom: 3px solid #fdd400;
+}
+
+.card-title {
+  font-size: 18px;
+}
+
+.card-link {
+  text-decoration: underline;
 }
 
 .backlink {
@@ -133,10 +201,14 @@ export default {
 }
 
 @media (min-width: 600px) {
-  .cards { grid-template-columns: repeat(2, 1fr); }
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (min-width: 900px) {
-  .cards { grid-template-columns: repeat(3, 1fr); }
+  .cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 </style>

@@ -1,11 +1,10 @@
 <template>
-  <button
-    type="button"
-    :class=[addCSS]
+  <div
+    :class="['button', 'clickable', addCSS]"
     @click="this.function"
   >
     {{ text }}
-  </button>
+  </div>
 </template>
 
 <script>
@@ -22,7 +21,7 @@ export default {
 </script>
 
 <style scoped>
-button {
+.button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -30,5 +29,6 @@ button {
   font-size: 100%;
   border: none;
   background-color: var(--theme-green);
+  padding: 10px;
 }
 </style>

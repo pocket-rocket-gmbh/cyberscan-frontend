@@ -3,11 +3,11 @@
     <header class="row">
       <div class="col">
         <div class="headline">
-          <span class="font-white"> Sicherheit für deine Systeme. </span><br />
+          <span class="font-white">Sicherheit für deine Systeme.</span><br />
           Jetzt scannen!
         </div>
         <form class="flex input-form">
-          <div class="input-http">https</div>
+          <div class="input-http">https://</div>
           <input
             class="input-domain"
             v-model="inputUrl"
@@ -63,7 +63,7 @@ export default {
   },
   data() {
     return {
-      inputUrl: "http://www.bundeswehr.de",
+      inputUrl: "www.pocket-rocket.io",
     };
   },
   components: {
@@ -78,7 +78,6 @@ export default {
   },
   methods: {
     async checkScanner() {
-      this.store.resetData();
       let result = await this.store.checkScanner(this.inputUrl);
       this.store.waitForReport(this.inputUrl);
       localStorage.setItem("domain", this.inputUrl);

@@ -1,7 +1,6 @@
 <template>
   <header class="relative">
-    <img class="eye-small" src="/img/eye-small.svg" />
-    <div class="status-text">Scan ist {{ this.store.status }}</div>
+    <div class="status-text">Scan is {{ this.store.status }}</div>
     <div class="stats-container">
       <div class="subdomains">
         <span class="count font-white"> {{ this.store.countSubs }}<br /> </span>
@@ -20,7 +19,14 @@
         Aktive Webserver
       </div>
       <div class="statistics">
-        <SecureStatistic></SecureStatistic>
+        <SecureStatistic
+          :alerts="
+            this.store.structured
+              .map((item) => item.alerts)
+              .filter((alert) => alert)
+          "
+        >
+        </SecureStatistic>
       </div>
     </div>
   </header>
@@ -52,14 +58,12 @@ export default {
 .subdomains,
 .hosts,
 .webservers {
+  border-right: 2px solid #fff;
   text-align: center;
+  padding: 20px;
 }
 .count {
   font-size: 300%;
-}
-.eye-small {
-  margin: 5px auto;
-  display: block;
 }
 .status-text {
   text-align: center;
