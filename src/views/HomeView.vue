@@ -39,7 +39,7 @@
                 fill="white"
               />
               <path
-                class="eye-svg"
+                class="eye-svg eye-animation"
                 d="M183.685 149.402C224.941 149.402 258.386 115.958 258.386 74.7012C258.386 33.4449 224.941 0 183.685 0C142.429 0 108.984 33.4449 108.984 74.7012C108.984 115.958 142.429 149.402 183.685 149.402Z"
                 fill="#1E1F1C"
               />
@@ -155,21 +155,5 @@ export default {
 
 .eye svg {
   max-width: 300px;
-}
-
-.eye-svg {
-  animation: eye 90s ease infinite;
-}
-
-@keyframes eye {
-  0% {
-    transform: translate(0px, 0px);
-  }
-  25% {
-    transform: translate(-20px, 40px);
-  }
-  50% {
-    transform: translate(30px, 20px);
-  }
 }
 </style>

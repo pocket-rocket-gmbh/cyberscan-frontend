@@ -20,12 +20,8 @@ export const useMainStore = defineStore(
     requestTimer: null,
     domain: null,
     bannerText: "",
-    countSubs: 0,
-    countHosts: 0,
-    countWebservers: 0,
-    countCVEs: 0,
-    countHighCVEs: 0,
-    structured: [],
+    hosts: [],
+    stats: {},
     status: null
   }),
   actions: {
@@ -75,15 +71,9 @@ export const useMainStore = defineStore(
       }
       let result = await this.getReportFromApi(inputUrl)
       if (result.data) {
-        this.countSubs = result.data.subdomains
-        this.countSubs = result.data.countSubs
-        this.countHosts = result.data.countHosts
-        this.countWebservers = result.data.countWebservers
-        this.countCVEs = result.data.countCVEs
-        this.countHighCVEs = result.data.countHighCVEs
+        this.stats = result.data.stats
         this.status = result.data.status
-        this.structured = sortResultBasedOnIssues(result.data.structured)
-
+        this.hosts = sortResultBasedOnIssues(result.data.hosts)
         return true;
       } else {
         return false;
@@ -91,21 +81,21 @@ export const useMainStore = defineStore(
     },
     async startScanner(inputUrl) {
       let domain = getDomainFromUrl(inputUrl)
-      let result = await axios.get(config.rootPath() + "actions/" + domain + '/start')
+      let result = await (await axios.get(config.rootPath() + "security/" + domain + '/scan'), { withCredentials: true })
       return result;
     },
     async checkScanner(inputUrl) {
       let report = await this.getReportFromApi(inputUrl)
-      if (report.data.structured.length > 0) {
-        return {status: "Running"};
+      if (report.data.hosts.length > 0) {
+        return { status: "Running" };
       }
       let domain = getDomainFromUrl(inputUrl)
-      let result = await axios.get(config.rootPath() + "actions/" + domain + '/start')
+      let result = await axios.get(config.rootPath() + "security/" + domain + '/scan', { withCredentials: true })
       return result;
     },
     async getReportFromApi(inputUrl) {
       let domain = getDomainFromUrl(inputUrl)
-      let result = await axios.get(config.rootPath() + "reports/" + domain)
+      let result = await axios.get(config.rootPath() + "security/" + domain + '/report', { withCredentials: true })
       return result;
     }
   }

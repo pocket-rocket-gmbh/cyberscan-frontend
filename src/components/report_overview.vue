@@ -3,25 +3,25 @@
     <div class="status-text">Scan is {{ this.store.status }}</div>
     <div class="stats-container">
       <div class="subdomains">
-        <span class="count font-white"> {{ this.store.countSubs }}<br /> </span>
+        <span class="count font-white"> {{ this.store.stats?.subdomains }}<br /> </span>
         Subdomains
       </div>
       <div class="hosts">
         <span class="count font-white">
-          {{ this.store.countHosts }}<br />
+          {{ this.store.stats?.hosts }}<br />
         </span>
         Aktive Hosts
       </div>
       <div class="webservers">
         <span class="count font-white">
-          {{ this.store.countWebservers }}<br />
+          {{ this.store.stats?.webserver }}<br />
         </span>
         Aktive Webserver
       </div>
       <div class="statistics">
         <SecureStatistic
           :alerts="
-            this.store.structured
+            this.store.hosts
               .map((item) => item.alerts)
               .filter((alert) => alert)
           "

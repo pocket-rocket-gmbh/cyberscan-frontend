@@ -6,13 +6,38 @@
       :function="this.startScanner"
       addCSS="button-rescan"
     />
-    <img class="eye-small" src="/img/eye-small.svg" />
+    <svg
+      :class="['eye-small', this.store.stats?.alerts > 0 ? 'eye-active' : '']"
+      width="104"
+      height="137"
+      viewBox="0 0 104 137"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        class="eye-element"
+        width="103.024"
+        height="137"
+        rx="51.512"
+        fill="#1D1D1B"
+      />
+      <path
+        d="M17.9014 71.4191C36.4445 46.833 66.4888 46.833 85.0076 71.4191C66.4888 95.9809 36.4445 95.9809 17.9014 71.4191Z"
+        fill="white"
+      />
+      <path
+        class="eye-element"
+        d="M51.4545 80.2642C58.9907 80.2642 65.0999 74.1549 65.0999 66.6188C65.0999 59.0826 58.9907 52.9733 51.4545 52.9733C43.9183 52.9733 37.8091 59.0826 37.8091 66.6188C37.8091 74.1549 43.9183 80.2642 51.4545 80.2642Z"
+        fill="#1D1D1B"
+      />
+    </svg>
+
     <ReportOverview></ReportOverview>
     <div>
       <ul class="cards">
         <li
           :class="['card', this.returnCSSByAlertSeverity(host.alerts)]"
-          v-for="host in this.store.structured"
+          v-for="host in this.store.hosts"
           :key="host"
         >
           <div>
@@ -41,26 +66,24 @@
             </div>
 
             <div
-              class="card-headline card-headline-security"
-              v-if="host.alerts.length > 0"
+              class="card-alert top-spacer"
+              v-for="alert in host.alerts"
+              :key="alert"
             >
-              Sicherheit:
-            </div>
-            <div class="card-alert" v-for="alert in host.alerts" :key="alert">
-              {{ alert.title }}<br />
-              {{ alert.url }}<br />
-              Risiko:<br />
-              {{ alert.severity }}
-              <span v-if="alert.description">
-                <br />
-                Beschreibung:<br />
-                {{ alert.description }}
-              </span>
-              <span v-if="alert.cve">
-                <br />
-                CVE:<br />
+              <span class="card-headline-security">{{ alert.title }}</span>
+              <div class="font-small font-red">
+                Risiko: {{ alert.severity }}
+              </div>
+              <div class="font-small">
+                {{ alert.url }}
+              </div>
+
+              <div class="font-small" v-if="alert.description">
+                Beschreibung: {{ alert.description }}
+              </div>
+              <div class="font-small font-red" v-if="alert.cve">
                 {{ alert.cve }}
-              </span>
+              </div>
             </div>
             <div class="card-panel" v-for="panel in host.panels" :key="panel">
               {{ panel.name }}<br />
@@ -198,6 +221,10 @@ export default {
   position: absolute;
   left: 0;
   top: 10px;
+}
+
+.eye-active .eye-element {
+  fill: var(--theme-red);
 }
 
 @media (min-width: 600px) {

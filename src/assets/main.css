@@ -27,7 +27,7 @@ body {
 }
 
 .center {
-    display: block;;
+    display: block;
     margin: 0 auto;
 }
 
@@ -50,9 +50,21 @@ a:visited {
     color: #FFF;
 }
 
+.font-red {
+    color: var(--theme-red);
+}
+
+.font-small {
+    font-size: 80%;
+}
+
 /* DEFAULT */
 .clickable {
     cursor: pointer;
+}
+
+.top-spacer {
+    margin-top: 10px;
 }
 
 /* GRID */
@@ -75,4 +87,23 @@ a:visited {
 
 .col {
     position: relative;
+}
+
+/* ANIMATIONS */
+.eye-animation {
+    animation: eye 90s ease infinite;
+}
+
+@keyframes eye {
+    0% {
+        transform: translate(0px, 0px);
+    }
+
+    25% {
+        transform: translate(-20px, 40px);
+    }
+
+    50% {
+        transform: translate(30px, 20px);
+    }
 }
